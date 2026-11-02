@@ -1,1 +1,12 @@
-{}
+{
+  "signal_key": "0301ac27cd24a219",
+  "last_signal": {
+    "url": "https://www.tradingkey.com/tools/trading/4420545",
+    "direction": "LONG",
+    "pivot": 1.1177,
+    "target1": 1.1228,
+    "target2": 1.124,
+    "published": "Nov 2, 2026 4:45 PM",
+    "publication_timezone_verified": false
+  }
+}
