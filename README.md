@@ -1,32 +1,25 @@
-# EUR/USD Trading Central → ntfy.sh (GitHub Actions)
+# EUR/USD Trading Central → GitHub Actions → ntfy
 
-## Beállítás
-1. Hozz létre egy **privát** GitHub repositoryt.
-2. Töltsd fel a csomag tartalmát a repository gyökerébe, a `.github/workflows/eurusd.yml` fájllal együtt (a rejtett `.github` mappa fontos).
-3. GitHub: **Settings → Secrets and variables → Actions → New repository secret**.
-   - Név: `NTFY_TOPIC`
-   - Érték: `ict-trade-alert-8k4pck`
-4. GitHub: **Settings → Actions → General → Workflow permissions**: válaszd a **Read and write permissions** opciót (a duplikált értesítések elkerüléséhez szükséges állapotfájl mentéséhez).
-5. **Actions → EURUSD ntfy monitor → Run workflow**. Ellenőrizd a futási naplót és az ntfy appot.
-6. A workflow hétköznapokon 15 percenként van ütemezve (UTC, GitHub terhelés miatt késhet). A GitHub ütemezés nem garantált valós idejű.
+A monitor 15 percenként ütemezve ellenőrzi a TradingKey EUR/USD intraday elemzését és a Yahoo EURUSD egyperces gyertyájának utolsó nem üres záróárát. A GitHub ütemezés késhet, nem garantál pontos negyedórás indulást.
 
-## Fontos korlátok
-- A monitor **új/megújult EUR/USD szintkombinációkról** küld ntfy értesítést.
-- **Belépésizóna-riasztást egyelőre NEM küld**: a TradingKey cikkek megjelenített publikációs idejének időzónája nincs függetlenül igazolva. Elavult jelzésből nem generálunk megtévesztő R/R riasztást.
-- A script tartalmaz friss árfolyamlekérdezőt (Yahoo Finance), de ezt csak az időbélyeg és a kereskedési logika ellenőrzése után kapcsoljuk össze a belépésizóna-figyeléssel.
-- A TradingKey HTML-je vagy hozzáférési szabályai változhatnak. HTTP 403/429 vagy robots.txt tiltás esetén a program leáll; nem kerül megkerülésre hozzáféréskorlátozás.
-- A nyilvános ntfy témát a téma nevének ismeretében más is olvashatja. Ne küldj rá bizalmas adatot.
-- A GitHub Actions használatára a GitHub kvótái és szabályai érvényesek. Nem garantált, hogy minden futás időben indul.
-- **Nem köt automatikusan, és nem befektetési ajánlás.**
+A meglévő `NTFY_TOPIC` Actions Secretet használja. Titkos értéket ne írj fájlba vagy naplóba.
 
-## Próbaüzenet
-A számítógépeden PowerShellből (a nyilvános témára):
+## Publikáció és árfolyam
 
-```powershell
-Invoke-RestMethod -Uri 'https://ntfy.sh/ict-trade-alert-8k4pck' -Method Post -Body 'EUR/USD ntfy teszt - sikeres kapcsolat'
-```
+A publikáció UTC-ideje a cikk saját `window.__QUDE_LOADER_DATA__` adatai közül származik: egyező cikkazonosító, EURUSD, INTRADAY és Unix `publishAt`. Az első észlelés külön megfigyelési adat, soha nem publikációs bizonyíték. Hiányzó időbélyeg vagy 24 óránál régebbi elemzés esetén nincs belépési jelzés.
 
-## További fejlesztés
-1. TradingKey `datePublished`/szerver időbélyeg időzónájának hiteles ellenőrzése.
-2. Broker-közeli bid/ask feed és 15 percnél frissebb árfolyam.
-3. 2:1 R/R zónába lépéskor egyszeri push, és állapotkövetés.
+Legfeljebb 5 perces árfolyam fogadható el; a több mint 60 másodperccel jövőbeli időbélyeg és hibás ár elutasítva. A Yahoo késleltetett/indikációs forrás, nem végrehajtható bid/ask jegyzés. Hozzáférési vagy frissességi hiba esetén a futás naplózza a hiányt, és nem küld belépési jelzést.
+
+## Értesítések
+
+Új cikkről vagy azonos cikk megváltozott irányáról/szintjeiről egyszeri jelzés. Belépési jelzés akkor, ha az ár a pivot és TP1 között van, a pivotig számolt kockázat legalább 3 pip, és a TP1-ig számolt hozam/kockázat legalább 2:1. A pivot feltételezett stop; a spread és csúszás nincs levonva, így a tényleges arány kisebb lehet.
+
+Az állapot a `state.json` fájlban marad meg, a futások sorban futnak. Sikeres küldés után az állapot rögtön helyben mentésre kerül, az Actions hibás futás után is megpróbálja feltölteni. Ha a küldés és az állapot tartós mentése között megszakad a folyamat, ismétlés előfordulhat: pontosan egyszeri kézbesítés nem garantálható. ntfy HTTP-siker a szerver átvételét igazolja, nem a telefonos megjelenést.
+
+## Tesztelés
+
+`python -m unittest -v` — publikáció cikkazonossága, ismeretlen publikáció blokkolása, ismételt futások és új cikk azonos szintekkel, elavult/jövőbeli/hibás árfolyamok.
+
+A módosítások push után automatikus ellenőrzést indítanak, vagy Actions → Run workflow. Valódi kereskedést nem indít.
+
+A korábbi README nyilvános témanevet tartalmazott. Eltávolítása nem törli a git előzményből; ha ez a használt téma, annak neve korábban nyilvánossá vált.
