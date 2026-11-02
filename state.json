@@ -1,22 +1,24 @@
 {
   "signal_key": "0301ac27cd24a219",
   "last_signal": {
-    "url": "https://www.tradingkey.com/tools/trading/4420639",
+    "url": "https://www.tradingkey.com/tools/trading/4420860",
     "direction": "LONG",
     "pivot": 1.1177,
     "target1": 1.1228,
     "target2": 1.124,
-    "published": "Nov 2, 2026 8:20 PM",
+    "published": "Nov 2, 2026 8:35 PM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-02T20:20:00+00:00"
+    "published_utc": "2026-11-02T20:35:00+00:00"
   },
   "seen_forecasts": [
     "5dcc74f6ef121a53a6c1e067",
-    "7f793411c7539cc10b9a3021"
+    "7f793411c7539cc10b9a3021",
+    "c0f791c5730ee889d05b1ebb"
   ],
   "zone_alerts": [],
   "first_seen_by_forecast": {
     "5dcc74f6ef121a53a6c1e067": "2026-11-02T17:26:16.411214+00:00",
-    "7f793411c7539cc10b9a3021": "2026-11-02T20:30:51.375129+00:00"
+    "7f793411c7539cc10b9a3021": "2026-11-02T20:30:51.375129+00:00",
+    "c0f791c5730ee889d05b1ebb": "2026-11-02T20:45:42.078622+00:00"
   }
 }
