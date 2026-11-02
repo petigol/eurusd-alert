@@ -7,6 +7,14 @@
     "target1": 1.1228,
     "target2": 1.124,
     "published": "Nov 2, 2026 4:45 PM",
-    "publication_timezone_verified": false
+    "publication_timezone_verified": true,
+    "published_utc": "2026-11-02T16:45:00+00:00"
+  },
+  "seen_forecasts": [
+    "5dcc74f6ef121a53a6c1e067"
+  ],
+  "zone_alerts": [],
+  "first_seen_by_forecast": {
+    "5dcc74f6ef121a53a6c1e067": "2026-11-02T17:26:16.411214+00:00"
   }
 }
