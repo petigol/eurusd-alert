@@ -29,10 +29,20 @@ jobs:
         run: pip install -r requirements.txt
       - name: Test freshness and deduplication
         run: python -m unittest -v
+      - name: Test ntfy delivery after code change
+        if: github.event_name == 'push'
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python -c "from monitor import notify; notify('EURUSD monitor test', 'A javitott monitor GitHub Actions ntfy kapcsolattesztje. Ez nem kereskedesi jelzes.')"
       - name: Run EURUSD monitor
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-        run: python -u monitor.py
+        run: |
+          python -u monitor.py
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "Second pass checks persisted notification deduplication"
+            python -u monitor.py
+          fi
       - name: Save alert state
         if: always()
         run: |
