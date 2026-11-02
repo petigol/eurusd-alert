@@ -1,0 +1,44 @@
+
+name: EURUSD ntfy monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eurusd-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run EURUSD monitor
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python monitor.py
+
+      - name: Save alert state
+        run: |
+          if ! git diff --quiet -- state.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add state.json
+            git commit -m "Update EURUSD alert state"
+            git push
+          fi
