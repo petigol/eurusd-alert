@@ -9,8 +9,6 @@ on:
       - test_monitor.py
       - requirements.txt
       - .github/workflows/eurusd.yml
-  schedule:
-    - cron: '3,18,33,48 * * * *'
 
 permissions:
   contents: write
