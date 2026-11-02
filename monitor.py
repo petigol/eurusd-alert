@@ -19,6 +19,30 @@ def fetch(url):
     if r.status_code in (403,429):raise RuntimeError('TradingKey access restricted: '+str(r.status_code))
     r.raise_for_status();return r.text
 
+def publication_time(soup):
+    """Only trust machine-readable timezone-aware publication timestamps."""
+    values=[]
+    for meta in soup.select('meta[property="article:published_time"], meta[itemprop="datePublished"], meta[name="datePublished"]'):
+        values.append(meta.get('content',''))
+    for node in soup.select('script[type="application/ld+json"]'):
+        try:
+            data=json.loads(node.string or node.get_text())
+            def walk(obj):
+                if isinstance(obj,dict):
+                    if 'datePublished' in obj:values.append(str(obj['datePublished']))
+                    for v in obj.values():walk(v)
+                elif isinstance(obj,list):
+                    for v in obj:walk(v)
+            walk(data)
+        except (ValueError,TypeError):pass
+    for v in values:
+        try:
+            dt=datetime.fromisoformat(v.strip().replace('Z','+00:00'))
+            if dt.tzinfo is not None and dt.utcoffset() is not None:
+                return dt.astimezone(timezone.utc)
+        except ValueError:pass
+    return None
+
 def latest():
     robots=urllib.robotparser.RobotFileParser();robots.set_url(BASE+'/robots.txt');robots.read()
     pages=[]
@@ -49,7 +73,10 @@ def latest():
         if not (t1>pivot if direction=='LONG' else t1<pivot):continue
         # Publication timestamp on TradingKey is displayed without a verified timezone.
         # Do not infer age from it: mark freshness unknown, and suppress price-zone alert.
-        return dict(url=url,direction=direction,pivot=pivot,target1=t1,target2=t2,published=dt.group(0),publication_timezone_verified=False)
+        published_utc=publication_time(soup)
+        return dict(url=url,direction=direction,pivot=pivot,target1=t1,target2=t2,
+                    published=dt.group(0),publication_timezone_verified=published_utc is not None,
+                    published_utc=published_utc.isoformat() if published_utc else None)
     return None
 
 def quote():
@@ -75,15 +102,57 @@ def notify(title,message,tags='chart_with_upwards_trend'):
 def main():
     state=json.loads(STATE.read_text()) if STATE.exists() else {}
     signal=latest()
-    if not signal:print('No verified EUR/USD intraday signal found; no notification');return
+    if not signal:
+        print('No verified EUR/USD intraday signal found; no notification')
+        return
     key=hashlib.sha256(json.dumps([signal[k] for k in ('direction','pivot','target1','target2')]).encode()).hexdigest()[:16]
     print('Signal:',signal)
-    if key!=state.get('signal_key'):
-        notify('EUR/USD Trading Central: '+signal['direction'],f"{signal['direction']} | pivot {signal['pivot']:.4f} | TP1 {signal['target1']:.4f} | TP2 {signal['target2']:.4f}\nTradingKey kijelzett idő: {signal['published']} (időzóna nem igazolt)\n{signal['url']}\nÚj szintkombináció; manuális ellenőrzés szükséges.")
-        state['signal_key']=key;state['last_signal']=signal
-    # SAFETY: No price-based alerts until publication timezone/freshness is independently verified.
-    # A 2:1 signal on a stale recommendation is misleading, so intentionally suppress it.
-    print('Price-zone alert disabled: TradingKey publication timezone not independently verified.')
+    new_signal=key!=state.get('signal_key')
+    if new_signal:
+        state['signal_key']=key
+        state['last_signal']=signal
+        state['zone_alerted_key']=None
+        state['zone_inside']=False
+        notify('EUR/USD Trading Central: '+signal['direction'],
+               f"{signal['direction']} | pivot {signal['pivot']:.4f} | TP1 {signal['target1']:.4f} | TP2 {signal['target2']:.4f}\n"
+               f"TradingKey kijelzett idő: {signal['published']} (kijelzett időzóna nem igazolt)\n"
+               f"{signal['url']}\nÚj szintkombináció; manuális ellenőrzés szükséges.")
+
+    # No price-zone alerts on timestamps lacking a timezone-aware source.
+    if not signal['publication_timezone_verified']:
+        print('Price-zone alert disabled: no timezone-aware publication metadata.')
+    else:
+        pub=datetime.fromisoformat(signal['published_utc'])
+        age=datetime.now(timezone.utc)-pub
+        if not timedelta(minutes=-5)<=age<=timedelta(hours=24):
+            print('Price-zone alert disabled: publication outside 24h freshness window:',age)
+        else:
+            try:
+                price,quote_time,quote_source=quote()
+                pivot=signal['pivot']; target=signal['target1']
+                if signal['direction']=='LONG':
+                    inside=pivot<price<target
+                    risk=(price-pivot)*10000
+                    reward=(target-price)*10000
+                else:
+                    inside=target<price<pivot
+                    risk=(pivot-price)*10000
+                    reward=(price-target)*10000
+                rr=reward/risk if inside and risk>0 else 0
+                qualifies=inside and rr>=2.0
+                print(f'Quote={price:.5f} at {quote_time}; risk={risk:.1f}p; reward={reward:.1f}p; RR={rr:.2f}; qualifies={qualifies}')
+                # One alert per distinct signal level combination. Reset only on new combination.
+                if qualifies and state.get('zone_alerted_key')!=key:
+                    notify('EUR/USD BELÉPÉSI ZÓNA: '+signal['direction'],
+                           f"{signal['direction']} | ár {price:.5f} | pivot {pivot:.4f} | TP1 {target:.4f}\n"
+                           f"Stop-távolság {risk:.1f} pip | céltávolság {reward:.1f} pip | R/R {rr:.2f}:1\n"
+                           f"Árfolyam UTC: {quote_time}\nElemzés UTC: {signal['published_utc']}\n"
+                           f"Trading Central: {signal['url']}\nÁrfolyamforrás: {quote_source}\n"
+                           'Tájékoztató jelzés; a pivot feltételezett stop, a spread és a csúszás módosíthatja az R/R-t.',
+                           tags='dart')
+                    state['zone_alerted_key']=key
+            except (requests.RequestException,ValueError,KeyError,RuntimeError) as exc:
+                print('Price-zone check unavailable; no zone alert:',repr(exc))
     STATE.write_text(json.dumps(state,ensure_ascii=False,indent=2)+'\n')
 
 if __name__=='__main__':
