@@ -34,5 +34,15 @@
     "4ddf20bde3ee7e6119721983": "2026-11-03T02:15:41.202966+00:00",
     "95697e053e2772c800030849": "2026-11-03T04:01:01.913625+00:00",
     "ae5c36d94512f0d3397ab249": "2026-11-03T06:15:40.791975+00:00"
+  },
+  "direction_baseline": {
+    "url": "https://www.tradingkey.com/tools/trading/4421926",
+    "direction": "LONG",
+    "pivot": 1.1177,
+    "target1": 1.1228,
+    "target2": 1.124,
+    "published": "Nov 3, 2026 6:00 AM",
+    "publication_timezone_verified": true,
+    "published_utc": "2026-11-03T06:00:00+00:00"
   }
 }
