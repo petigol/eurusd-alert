@@ -1,14 +1,14 @@
 {
   "signal_key": "0301ac27cd24a219",
   "last_signal": {
-    "url": "https://www.tradingkey.com/tools/trading/4423206",
-    "direction": "LONG",
-    "pivot": 1.1177,
-    "target1": 1.1228,
-    "target2": 1.124,
-    "published": "Nov 3, 2026 10:00 AM",
+    "url": "https://www.tradingkey.com/tools/trading/4423371",
+    "direction": "SHORT",
+    "pivot": 1.1201,
+    "target1": 1.1151,
+    "target2": 1.1139,
+    "published": "Nov 3, 2026 12:00 PM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-03T10:00:00+00:00"
+    "published_utc": "2026-11-03T12:00:00+00:00"
   },
   "seen_forecasts": [
     "5dcc74f6ef121a53a6c1e067",
@@ -19,7 +19,8 @@
     "95697e053e2772c800030849",
     "ae5c36d94512f0d3397ab249",
     "7ebc4be951a54e63b3dc5a1e",
-    "fc79851c5c2da85472972a1e"
+    "fc79851c5c2da85472972a1e",
+    "08b2d9e9e7ec467c68461db4"
   ],
   "zone_alerts": [
     "c0f791c5730ee889d05b1ebb",
@@ -39,16 +40,20 @@
     "95697e053e2772c800030849": "2026-11-03T04:01:01.913625+00:00",
     "ae5c36d94512f0d3397ab249": "2026-11-03T06:15:40.791975+00:00",
     "7ebc4be951a54e63b3dc5a1e": "2026-11-03T09:01:00.360132+00:00",
-    "fc79851c5c2da85472972a1e": "2026-11-03T10:15:40.871006+00:00"
+    "fc79851c5c2da85472972a1e": "2026-11-03T10:15:40.871006+00:00",
+    "08b2d9e9e7ec467c68461db4": "2026-11-03T12:15:42.562376+00:00"
   },
   "direction_baseline": {
-    "url": "https://www.tradingkey.com/tools/trading/4423206",
-    "direction": "LONG",
-    "pivot": 1.1177,
-    "target1": 1.1228,
-    "target2": 1.124,
-    "published": "Nov 3, 2026 10:00 AM",
+    "url": "https://www.tradingkey.com/tools/trading/4423371",
+    "direction": "SHORT",
+    "pivot": 1.1201,
+    "target1": 1.1151,
+    "target2": 1.1139,
+    "published": "Nov 3, 2026 12:00 PM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-03T10:00:00+00:00"
-  }
+    "published_utc": "2026-11-03T12:00:00+00:00"
+  },
+  "direction_change_alerts": [
+    "dcecdf775286ae2ce6ed1868"
+  ]
 }
