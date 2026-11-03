@@ -102,6 +102,37 @@ def notify(title,message,tags='chart_with_upwards_trend'):
 def save(state):
     tmp=STATE.with_suffix('.tmp');tmp.write_text(json.dumps(state,ensure_ascii=False,indent=2)+'\n');tmp.replace(STATE)
 
+
+def check_direction_change(state, signal):
+    """Alert once per chronological, source-dated primary-direction transition."""
+    if not signal.get('publication_timezone_verified') or not signal.get('published_utc'):
+        return
+    stamp=datetime.fromisoformat(signal['published_utc'])
+    age=datetime.now(timezone.utc)-stamp
+    if not timedelta(minutes=-5)<=age<=timedelta(hours=24):
+        return
+    previous=state.get('direction_baseline') or state.get('last_signal',{})
+    old_direction=previous.get('direction')
+    old_stamp=previous.get('published_utc')
+    if old_stamp and stamp<datetime.fromisoformat(old_stamp):
+        print('Direction check: older article ignored')
+        return
+    if old_direction in ('LONG','SHORT') and old_direction!=signal['direction'] and old_stamp:
+        event=hashlib.sha256(json.dumps([previous.get('url'),old_direction,
+            signal['url'],signal['direction'],signal['published_utc']]).encode()).hexdigest()[:24]
+        delivered=state.setdefault('direction_change_alerts',[])
+        if event not in delivered:
+            notify('EUR/USD IRANYVALTAS: '+old_direction+' -> '+signal['direction'],
+                   f"Az eredeti forgatókönyv megváltozott – ellenőrizd a pozíciót.\n"
+                   f"Trading Central: {old_direction} → {signal['direction']}\n"
+                   f"Új pivot: {signal['pivot']:.4f} | TP1: {signal['target1']:.4f} | TP2: {signal['target2']:.4f}\n"
+                   f"Forrás publikáció UTC: {signal['published_utc']}\n{signal['url']}\n"
+                   "Ez irányváltási figyelmeztetés, nem automatikus zárás. A program nem ismeri a tényleges pozíciódat.",
+                   tags='warning')
+            delivered.append(event)
+    state['direction_baseline']=dict(signal)
+    save(state)
+
 def main():
     state=json.loads(STATE.read_text()) if STATE.exists() else {}
     signal=latest()
@@ -118,6 +149,7 @@ def main():
         seen.append(key)
         if state.get('zone_alerted_key'): zones.append(key)
     state.setdefault('first_seen_by_forecast',{}).setdefault(key,datetime.now(timezone.utc).isoformat())
+    check_direction_change(state,signal)
     # Probe the quote on every run, even when publication age is unknown.
     quote_data=None
     try:
