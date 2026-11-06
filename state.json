@@ -1,14 +1,14 @@
 {
   "signal_key": "0301ac27cd24a219",
   "last_signal": {
-    "url": "https://www.tradingkey.com/tools/trading/4432339",
-    "direction": "LONG",
-    "pivot": 1.1198,
-    "target1": 1.1274,
-    "target2": 1.1286,
-    "published": "Nov 6, 2026 3:45 AM",
+    "url": "https://www.tradingkey.com/tools/trading/4432598",
+    "direction": "SHORT",
+    "pivot": 1.1216,
+    "target1": 1.1172,
+    "target2": 1.1159,
+    "published": "Nov 6, 2026 6:00 AM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-06T03:45:00+00:00"
+    "published_utc": "2026-11-06T06:00:00+00:00"
   },
   "seen_forecasts": [
     "5dcc74f6ef121a53a6c1e067",
@@ -46,7 +46,8 @@
     "07ff81d69cb13ba27ae4cbb5",
     "441a1031e656998a4e38811b",
     "2a18392abe2bda5264e1a2fd",
-    "990b3d6ec3e38fd5bee8efe8"
+    "990b3d6ec3e38fd5bee8efe8",
+    "fe7365d27dba3cbf20637c5e"
   ],
   "zone_alerts": [
     "c0f791c5730ee889d05b1ebb",
@@ -106,20 +107,22 @@
     "07ff81d69cb13ba27ae4cbb5": "2026-11-05T20:45:48.495906+00:00",
     "441a1031e656998a4e38811b": "2026-11-05T23:45:52.490917+00:00",
     "2a18392abe2bda5264e1a2fd": "2026-11-06T02:15:45.201290+00:00",
-    "990b3d6ec3e38fd5bee8efe8": "2026-11-06T04:01:09.131949+00:00"
+    "990b3d6ec3e38fd5bee8efe8": "2026-11-06T04:01:09.131949+00:00",
+    "fe7365d27dba3cbf20637c5e": "2026-11-06T06:16:06.843799+00:00"
   },
   "direction_baseline": {
-    "url": "https://www.tradingkey.com/tools/trading/4432339",
-    "direction": "LONG",
-    "pivot": 1.1198,
-    "target1": 1.1274,
-    "target2": 1.1286,
-    "published": "Nov 6, 2026 3:45 AM",
+    "url": "https://www.tradingkey.com/tools/trading/4432598",
+    "direction": "SHORT",
+    "pivot": 1.1216,
+    "target1": 1.1172,
+    "target2": 1.1159,
+    "published": "Nov 6, 2026 6:00 AM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-06T03:45:00+00:00"
+    "published_utc": "2026-11-06T06:00:00+00:00"
   },
   "direction_change_alerts": [
     "dcecdf775286ae2ce6ed1868",
-    "423260b0da3c632796272dfb"
+    "423260b0da3c632796272dfb",
+    "0d8d9c99f5939d799dec4e3b"
   ]
 }
