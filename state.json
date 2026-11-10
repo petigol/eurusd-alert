@@ -1,14 +1,14 @@
 {
   "signal_key": "0301ac27cd24a219",
   "last_signal": {
-    "url": "https://www.tradingkey.com/tools/trading/4442589",
+    "url": "https://www.tradingkey.com/tools/trading/4442770",
     "direction": "SHORT",
     "pivot": 1.1177,
     "target1": 1.1122,
     "target2": 1.1109,
-    "published": "Nov 10, 2026 4:45 PM",
+    "published": "Nov 10, 2026 8:20 PM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-10T16:45:00+00:00"
+    "published_utc": "2026-11-10T20:20:00+00:00"
   },
   "seen_forecasts": [
     "5dcc74f6ef121a53a6c1e067",
@@ -71,7 +71,8 @@
     "ee0f5b9abc963eae401c5f19",
     "0a95103fd4814113c7b3aba2",
     "590bbd5c9351ba3787b4fdad",
-    "b5f950ebb135fbf48989cb70"
+    "b5f950ebb135fbf48989cb70",
+    "14c1801425eddf8b940d8b3e"
   ],
   "zone_alerts": [
     "c0f791c5730ee889d05b1ebb",
@@ -99,7 +100,8 @@
     "e37d3a26986a49fd43c017a0",
     "1923075f4363035ca1b34e68",
     "d60c9897378639c4a8031c20",
-    "b5f950ebb135fbf48989cb70"
+    "b5f950ebb135fbf48989cb70",
+    "14c1801425eddf8b940d8b3e"
   ],
   "first_seen_by_forecast": {
     "5dcc74f6ef121a53a6c1e067": "2026-11-02T17:26:16.411214+00:00",
@@ -162,17 +164,18 @@
     "ee0f5b9abc963eae401c5f19": "2026-11-10T08:45:59.431503+00:00",
     "0a95103fd4814113c7b3aba2": "2026-11-10T10:15:54.508617+00:00",
     "590bbd5c9351ba3787b4fdad": "2026-11-10T12:16:09.284224+00:00",
-    "b5f950ebb135fbf48989cb70": "2026-11-10T17:01:27.697011+00:00"
+    "b5f950ebb135fbf48989cb70": "2026-11-10T17:01:27.697011+00:00",
+    "14c1801425eddf8b940d8b3e": "2026-11-10T20:31:01.753450+00:00"
   },
   "direction_baseline": {
-    "url": "https://www.tradingkey.com/tools/trading/4442589",
+    "url": "https://www.tradingkey.com/tools/trading/4442770",
     "direction": "SHORT",
     "pivot": 1.1177,
     "target1": 1.1122,
     "target2": 1.1109,
-    "published": "Nov 10, 2026 4:45 PM",
+    "published": "Nov 10, 2026 8:20 PM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-10T16:45:00+00:00"
+    "published_utc": "2026-11-10T20:20:00+00:00"
   },
   "direction_change_alerts": [
     "dcecdf775286ae2ce6ed1868",
