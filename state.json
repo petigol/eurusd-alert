@@ -1,14 +1,14 @@
 {
   "signal_key": "0301ac27cd24a219",
   "last_signal": {
-    "url": "https://www.tradingkey.com/tools/trading/4444626",
+    "url": "https://www.tradingkey.com/tools/trading/4445275",
     "direction": "SHORT",
     "pivot": 1.1177,
     "target1": 1.1122,
     "target2": 1.1109,
-    "published": "Nov 11, 2026 8:40 AM",
+    "published": "Nov 11, 2026 10:00 AM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-11T08:40:00+00:00"
+    "published_utc": "2026-11-11T10:00:00+00:00"
   },
   "seen_forecasts": [
     "5dcc74f6ef121a53a6c1e067",
@@ -78,7 +78,8 @@
     "c8445da958585e08852207f5",
     "bfb0f589213100ddf9a55cb0",
     "96914fdc27fab7dcd96f1d31",
-    "30ac8b05e18d1e1fc8cf6577"
+    "30ac8b05e18d1e1fc8cf6577",
+    "c497b779aaf63d2c2e0fd1f2"
   ],
   "zone_alerts": [
     "c0f791c5730ee889d05b1ebb",
@@ -182,17 +183,18 @@
     "c8445da958585e08852207f5": "2026-11-11T02:16:05.775121+00:00",
     "bfb0f589213100ddf9a55cb0": "2026-11-11T04:01:24.851007+00:00",
     "96914fdc27fab7dcd96f1d31": "2026-11-11T06:16:10.273272+00:00",
-    "30ac8b05e18d1e1fc8cf6577": "2026-11-11T08:45:42.565459+00:00"
+    "30ac8b05e18d1e1fc8cf6577": "2026-11-11T08:45:42.565459+00:00",
+    "c497b779aaf63d2c2e0fd1f2": "2026-11-11T10:15:58.078506+00:00"
   },
   "direction_baseline": {
-    "url": "https://www.tradingkey.com/tools/trading/4444626",
+    "url": "https://www.tradingkey.com/tools/trading/4445275",
     "direction": "SHORT",
     "pivot": 1.1177,
     "target1": 1.1122,
     "target2": 1.1109,
-    "published": "Nov 11, 2026 8:40 AM",
+    "published": "Nov 11, 2026 10:00 AM",
     "publication_timezone_verified": true,
-    "published_utc": "2026-11-11T08:40:00+00:00"
+    "published_utc": "2026-11-11T10:00:00+00:00"
   },
   "direction_change_alerts": [
     "dcecdf775286ae2ce6ed1868",
