@@ -1,13 +1,12 @@
-
 name: EURUSD ntfy monitor
 
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - monitor.py
       - test_monitor.py
-      - requirements.txt
       - .github/workflows/eurusd.yml
 
 permissions:
@@ -20,47 +19,34 @@ concurrency:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    timeout-minutes: 85
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - name: Replay tests
+        run: python3 -m unittest -v
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Test freshness and deduplication
-        run: python -m unittest -v
-
-      - name: Test ntfy delivery after code change
+      - name: Test ntfy publication
         if: github.event_name == 'push'
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-        run: python -c "from monitor import notify; notify('EURUSD monitor test', 'A javitott monitor GitHub Actions ntfy kapcsolattesztje. Ez nem kereskedesi jelzes.')"
+          NTFY_SERVER: ${{ secrets.NTFY_SERVER }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+        run: python3 monitor.py test-ntfy
 
-      - name: Run EURUSD monitor
+      - name: Probe Yahoo M5 availability
+        if: github.event_name == 'push' && (success() || failure())
+        run: python3 monitor.py probe
+
+      - name: Monitor London session
+        if: github.event_name == 'workflow_dispatch'
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_SERVER: ${{ secrets.NTFY_SERVER }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
         run: |
-          python -u monitor.py
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "Second pass checks persisted notification deduplication"
-            python -u monitor.py
-          fi
-
-      - name: Save alert state
-        if: always()
-        run: |
-          if ! git diff --quiet -- state.json; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add state.json
-            git commit -m "Update EURUSD alert state"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python3 -u monitor.py watch

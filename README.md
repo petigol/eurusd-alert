@@ -1,25 +1,11 @@
-# EUR/USD Trading Central → GitHub Actions → ntfy
+# EUR/USD londoni sweep és MSS
 
-A monitor 15 percenként ütemezve ellenőrzi a TradingKey EUR/USD intraday elemzését és a Yahoo EURUSD egyperces gyertyájának utolsó nem üres záróárát. A GitHub ütemezés késhet, nem garantál pontos negyedórás indulást.
+A GitHub Actions meglévő, külső `workflow_dispatch` indítását használja. Az első hétköznapi indítás 02:44–04:00 New York-i idő között figyeli az M5 adatot a londoni ablak végéig. Minden más futás azonnal kilép.
 
-A meglévő `NTFY_TOPIC` Actions Secretet használja. Titkos értéket ne írj fájlba vagy naplóba.
+Az előző forexnap határa 17:00 New York-i idő szerint. Hétfőn a pénteken lezárt sávot használja. Teljes előző napi gyertyasor kell. A Yahoo EURUSD=X 5 perces adata indikációs ár. Az utolsó megjelenő gyertyát a program kihagyja, amíg újabb időbélyeg meg nem jelenik. A napló a Yahoo által addig közölt legfrissebb lezárt gyertya korát és siker esetén az ntfy átvételéig eltelt időt rögzíti.
 
-## Publikáció és árfolyam
+A friss MSS-értesítés a modell szerinti következő nyitás idejét közli. Az észlelést és a küldés indítását 15 másodpercen belül engedi a záráshoz képest. A nyitási ár ezen belül is változhat. Elavult gyertyákból visszaépíti a napi állapotot.
 
-A publikáció UTC-ideje a cikk saját `window.__QUDE_LOADER_DATA__` adatai közül származik: egyező cikkazonosító, EURUSD, INTRADAY és Unix `publishAt`. Az első észlelés külön megfigyelési adat, soha nem publikációs bizonyíték. Hiányzó időbélyeg vagy 24 óránál régebbi elemzés esetén nincs belépési jelzés.
+A meglévő `NTFY_TOPIC` Actions Secret szükséges, az `NTFY_SERVER` és az `NTFY_TOKEN` opcionális. A deduplikáció kulcsát publikálás előtt pusholja a repóba. Ha a publikálás hibázik, az esemény már lefoglalva marad, így ugyanarról az eseményről nem küld duplikátumot.
 
-Legfeljebb 5 perces árfolyam fogadható el; a több mint 60 másodperccel jövőbeli időbélyeg és hibás ár elutasítva. A Yahoo késleltetett/indikációs forrás, nem végrehajtható bid/ask jegyzés. Hozzáférési vagy frissességi hiba esetén a futás naplózza a hiányt, és nem küld belépési jelzést.
-
-## Értesítések
-
-Új cikkről vagy azonos cikk megváltozott irányáról/szintjeiről egyszeri jelzés. Belépési jelzés akkor, ha az ár a pivot és TP1 között van, a pivotig számolt kockázat legalább 3 pip, és a TP1-ig számolt hozam/kockázat legalább 2:1. A pivot feltételezett stop; a spread és csúszás nincs levonva, így a tényleges arány kisebb lehet.
-
-Az állapot a `state.json` fájlban marad meg, a futások sorban futnak. Sikeres küldés után az állapot rögtön helyben mentésre kerül, az Actions hibás futás után is megpróbálja feltölteni. Ha a küldés és az állapot tartós mentése között megszakad a folyamat, ismétlés előfordulhat: pontosan egyszeri kézbesítés nem garantálható. ntfy HTTP-siker a szerver átvételét igazolja, nem a telefonos megjelenést.
-
-## Tesztelés
-
-`python -m unittest -v` — publikáció cikkazonossága, ismeretlen publikáció blokkolása, ismételt futások és új cikk azonos szintekkel, elavult/jövőbeli/hibás árfolyamok.
-
-A módosítások push után automatikus ellenőrzést indítanak, vagy Actions → Run workflow. Valódi kereskedést nem indít.
-
-A korábbi README nyilvános témanevet tartalmazott. Eltávolítása nem törli a git előzményből; ha ez a használt téma, annak neve korábban nyilvánossá vált.
+`python3 -m unittest -v` a visszajátszásos tesztekhez. A kódváltozás utáni első workflow-futás TESZT ntfy üzenetet küld és megpróbálja lekérni a Yahoo M5 adatot.
